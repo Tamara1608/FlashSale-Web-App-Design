@@ -1,13 +1,18 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { LandingBanner } from './components/LandingBanner';
 import { ProductGrid } from './components/ProductGrid';
 import { ProductModal } from './components/ProductModal';
 import { CheckoutConfirmation } from './components/CheckoutConfirmation';
+import { Cart } from './components/Cart';
+import { UserProfile } from './components/UserProfile';
+import { FloatingCartButton } from './components/FloatingCartButton';
+import { CartProvider } from './components/hooks/useCart';
 import { Product } from './components/types';
 import { useProducts } from './components/hooks/useProducts';
+import { Toaster } from 'sonner';
 
-type Screen = 'landing' | 'products' | 'checkout';
+type Screen = 'landing' | 'products' | 'checkout' | 'profile';
 
 const mockProducts: Product[] = [
   {
@@ -70,6 +75,7 @@ export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [checkoutSuccess, setCheckoutSuccess] = useState<boolean | null>(null);
   const [checkoutProduct, setCheckoutProduct] = useState<Product | null>(null);
   const { products, setProducts } = useProducts();
@@ -91,7 +97,14 @@ export default function App() {
   const handleLogoClick = () => {
     setCurrentScreen('landing');
     setIsModalOpen(false);
+    setIsCartOpen(false);
     setCheckoutSuccess(null);
+  };
+
+  const handleProfileClick = () => {
+    setCurrentScreen('profile');
+    setIsModalOpen(false);
+    setIsCartOpen(false);
   };
 
   const handleShopNowClick = () => {
@@ -129,6 +142,10 @@ export default function App() {
     setCheckoutProduct(null);
   };
 
+  const handleBackFromProfile = () => {
+    setCurrentScreen('products');
+  };
+
   if (currentScreen === 'checkout') {
     return (
       <CheckoutConfirmation
@@ -136,6 +153,12 @@ export default function App() {
         productName={checkoutProduct?.name}
         onBackToProducts={handleBackToProducts}
       />
+    );
+  }
+
+  if (currentScreen === 'profile') {
+    return (
+      <UserProfile onBackClick={handleBackFromProfile} />
     );
   }
 
@@ -147,13 +170,18 @@ export default function App() {
           <LandingBanner onShopNowClick={handleShopNowClick} />
         </>
       ) : (
-        <div className="bg-pink-50 min-h-screen">
-          <Header onLogoClick={handleLogoClick} />
+        <div className="min-h-screen" style={{
+          background: 'linear-gradient(135deg, #ffb3ba 0%, #ff9a9e 25%, #fecfef 50%, #fecfef 75%, #ff6b6b 100%)',
+          minHeight: '100vh'
+        }}>
+          <Header 
+            onLogoClick={handleLogoClick} 
+            onProfileClick={handleProfileClick}
+          />
           {currentScreen === 'products' && (
             <ProductGrid
               products={products}
               onProductClick={handleProductClick}
-              onBuyClick={handleBuyClick}
             />
           )}
         </div>
@@ -163,8 +191,18 @@ export default function App() {
         product={selectedProduct}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onBuyClick={handleBuyClick}
       />
+      
+      <Cart
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+      />
+      
+      {currentScreen !== 'landing' && (
+        <FloatingCartButton onCartClick={() => setIsCartOpen(true)} />
+      )}
+      
+      <Toaster position="top-right" />
     </div>
   );
 }

@@ -8,4 +8,18 @@ export interface Product {
   maxStock: number;
 }
 
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}
+
+export interface OrderPayload {
+  userId: string;
+  items: Array<{
+    productId: string;
+    quantity: number;
+  }>;
+  totalPrice: number;
+}
+
 

@@ -1,5 +1,5 @@
 import { Card } from './ui/card';
-
+import React from 'react';
 export function ProductCardSkeleton() {
   return (
     <Card className="overflow-hidden animate-pulse">
