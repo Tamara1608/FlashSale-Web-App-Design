@@ -1,25 +1,31 @@
 import { ApiClient } from '../config/api';
 import { OrderPayload } from '../components/types';
 
+export interface OrderItemResponse {
+  id: number;
+  product: {
+    id: number;
+    name: string;
+    price: number;
+  };
+  quantity: number;
+}
+
 export interface OrderResponse {
-  id: string;
-  userId: string;
-  items: Array<{
-    productId: string;
-    quantity: number;
-    productName?: string;
-    productPrice?: number;
-  }>;
-  totalPrice: number;
-  status: 'PENDING' | 'CONFIRMED' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
-  createdAt: string;
-  updatedAt: string;
+  id: number;
+  orderDate: string;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+  };
+  items: OrderItemResponse[];
 }
 
 export interface CreateOrderRequest {
-  userId: string;
+  userId: number;
   items: Array<{
-    productId: string;
+    productId: number;
     quantity: number;
   }>;
   totalPrice: number;
@@ -36,7 +42,7 @@ export class OrderService {
     }
   }
 
-  static async getOrderById(id: string): Promise<OrderResponse> {
+  static async getOrderById(id: number): Promise<OrderResponse> {
     try {
       const response = await ApiClient.get<OrderResponse>(`/orders/${id}`);
       return response;
@@ -46,25 +52,13 @@ export class OrderService {
     }
   }
 
-  static async getUserOrders(userId: string): Promise<OrderResponse[]> {
+  static async getUserOrders(userId: number): Promise<OrderResponse[]> {
     try {
       const response = await ApiClient.get<OrderResponse[]>(`/orders/user/${userId}`);
       return response;
     } catch (error) {
       console.error(`Failed to fetch orders for user ${userId}:`, error);
       throw new Error(`Failed to fetch orders for user ${userId}`);
-    }
-  }
-
-  static async updateOrderStatus(id: string, status: OrderResponse['status']): Promise<OrderResponse> {
-    try {
-      const response = await ApiClient.put<OrderResponse>(`/orders/${id}/status`, {
-        status
-      });
-      return response;
-    } catch (error) {
-      console.error(`Failed to update order status for ${id}:`, error);
-      throw new Error(`Failed to update order status for ${id}`);
     }
   }
 }

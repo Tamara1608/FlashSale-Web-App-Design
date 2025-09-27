@@ -28,7 +28,7 @@ export function useProducts() {
           // Fallback to mock data if API fails
           const mock: Product[] = [
             {
-              id: '1',
+              id: 1,
               name: 'Premium Wireless Headphones',
               price: 79.99,
               originalPrice: 199.99,
@@ -37,7 +37,7 @@ export function useProducts() {
               maxStock: 50,
             },
             {
-              id: '2',
+              id: 2,
               name: 'Latest Smartphone Pro',
               price: 599.99,
               originalPrice: 999.99,
@@ -46,7 +46,7 @@ export function useProducts() {
               maxStock: 100,
             },
             {
-              id: '3',
+              id: 3,
               name: 'Ultra-Thin Gaming Laptop',
               price: 899.99,
               originalPrice: 1499.99,
@@ -55,7 +55,7 @@ export function useProducts() {
               maxStock: 25,
             },
             {
-              id: '4',
+              id: 4,
               name: 'Smart Fitness Watch',
               price: 149.99,
               originalPrice: 299.99,
@@ -64,7 +64,7 @@ export function useProducts() {
               maxStock: 75,
             },
             {
-              id: '5',
+              id: 5,
               name: 'Wireless Gaming Controller',
               price: 39.99,
               originalPrice: 79.99,
@@ -73,7 +73,7 @@ export function useProducts() {
               maxStock: 60,
             },
             {
-              id: '6',
+              id: 6,
               name: 'Professional Camera Kit',
               price: 449.99,
               originalPrice: 799.99,
@@ -82,7 +82,7 @@ export function useProducts() {
               maxStock: 30,
             },
             {
-              id: '7',
+              id: 7,
               name: 'Bluetooth Speaker',
               price: 89.99,
               originalPrice: 149.99,
@@ -91,7 +91,7 @@ export function useProducts() {
               maxStock: 40,
             },
             {
-              id: '8',
+              id: 8,
               name: 'Tablet Pro Max',
               price: 399.99,
               originalPrice: 699.99,
@@ -100,7 +100,7 @@ export function useProducts() {
               maxStock: 35,
             },
             {
-              id: '9',
+              id: 9,
               name: 'Mechanical Keyboard',
               price: 129.99,
               originalPrice: 199.99,
@@ -109,7 +109,7 @@ export function useProducts() {
               maxStock: 50,
             },
             {
-              id: '10',
+              id: 10,
               name: 'Gaming Mouse',
               price: 59.99,
               originalPrice: 99.99,
@@ -118,7 +118,7 @@ export function useProducts() {
               maxStock: 80,
             },
             {
-              id: '11',
+              id: 11,
               name: 'Monitor 4K Ultra',
               price: 299.99,
               originalPrice: 499.99,
@@ -127,7 +127,7 @@ export function useProducts() {
               maxStock: 20,
             },
             {
-              id: '12',
+              id: 12,
               name: 'Webcam HD Pro',
               price: 79.99,
               originalPrice: 129.99,
@@ -136,7 +136,7 @@ export function useProducts() {
               maxStock: 45,
             },
             {
-              id: '13',
+              id: 13,
               name: 'Power Bank 20000mAh',
               price: 29.99,
               originalPrice: 49.99,
@@ -145,7 +145,7 @@ export function useProducts() {
               maxStock: 100,
             },
             {
-              id: '14',
+              id: 14,
               name: 'USB-C Hub',
               price: 49.99,
               originalPrice: 79.99,
@@ -154,7 +154,7 @@ export function useProducts() {
               maxStock: 60,
             },
             {
-              id: '15',
+              id: 15,
               name: 'Wireless Charger',
               price: 24.99,
               originalPrice: 39.99,
@@ -163,7 +163,7 @@ export function useProducts() {
               maxStock: 120,
             },
             {
-              id: '16',
+              id: 16,
               name: 'Smart Home Hub',
               price: 199.99,
               originalPrice: 299.99,
@@ -172,7 +172,7 @@ export function useProducts() {
               maxStock: 25,
             },
             {
-              id: '17',
+              id: 17,
               name: 'VR Headset',
               price: 349.99,
               originalPrice: 499.99,
@@ -181,7 +181,7 @@ export function useProducts() {
               maxStock: 15,
             },
             {
-              id: '18',
+              id: 18,
               name: 'Drone Pro',
               price: 599.99,
               originalPrice: 899.99,
@@ -190,7 +190,7 @@ export function useProducts() {
               maxStock: 10,
             },
             {
-              id: '19',
+              id: 19,
               name: 'Smart Doorbell',
               price: 149.99,
               originalPrice: 199.99,
@@ -199,7 +199,7 @@ export function useProducts() {
               maxStock: 30,
             },
             {
-              id: '20',
+              id: 20,
               name: 'Security Camera',
               price: 89.99,
               originalPrice: 149.99,
@@ -224,7 +224,7 @@ export function useProducts() {
     };
   }, []);
 
-  const updateProductStock = async (productId: string, newStock: number) => {
+  const updateProductStock = async (productId: number, newStock: number) => {
     try {
       const updatedProduct = await ProductService.updateProductStock(productId, newStock);
       setProducts(prev => prev.map(p => p.id === productId ? updatedProduct : p));

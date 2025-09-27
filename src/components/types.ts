@@ -1,11 +1,13 @@
 export interface Product {
-  id: string;
+  id: number; // Changed from string to number to match Long id
   name: string;
+  description?: string; // Added description field
   price: number;
-  originalPrice: number;
-  image: string;
   stock: number;
-  maxStock: number;
+  // Frontend-only fields for display (will be mocked)
+  originalPrice?: number;
+  image?: string;
+  maxStock?: number;
 }
 
 export interface CartItem {
@@ -14,9 +16,9 @@ export interface CartItem {
 }
 
 export interface OrderPayload {
-  userId: string;
+  userId: number; // Changed from string to number to match Long id
   items: Array<{
-    productId: string;
+    productId: number; // Changed from string to number
     quantity: number;
   }>;
   totalPrice: number;

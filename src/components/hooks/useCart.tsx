@@ -70,7 +70,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (items.length === 0) return false;
 
     const orderPayload: OrderPayload = {
-      userId: 'user-123', // In a real app, this would come from auth context
+      userId: 1, // In a real app, this would come from auth context
       items: items.map(item => ({
         productId: item.product.id,
         quantity: item.quantity

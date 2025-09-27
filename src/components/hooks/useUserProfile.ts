@@ -2,18 +2,18 @@ import { useState, useEffect } from 'react';
 import { UserService, UserResponse, UserOrder } from '../../services/userService';
 
 export interface UserData {
-  fullName: string;
+  fullName: string; // Mock field for frontend display
   username: string;
   email: string;
-  profilePicture: string;
+  profilePicture: string; // Mock field for frontend display
 }
 
-export function useUserProfile(userId: string = 'user-123') {
+export function useUserProfile(userId: number = 1) {
   const [userData, setUserData] = useState<UserData>({
-    fullName: 'John Doe',
+    fullName: 'John Doe', // Mock value
     username: 'johndoe123',
     email: 'john.doe@example.com',
-    profilePicture: ''
+    profilePicture: '' // Mock value
   });
   const [orders, setOrders] = useState<UserOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,10 +32,10 @@ export function useUserProfile(userId: string = 'user-123') {
         ]);
 
         setUserData({
-          fullName: userResponse.fullName,
+          fullName: 'John Doe', // Mock value since backend doesn't have this field
           username: userResponse.username,
           email: userResponse.email,
-          profilePicture: userResponse.profilePicture || ''
+          profilePicture: '' // Mock value since backend doesn't have this field
         });
 
         setOrders(ordersResponse);

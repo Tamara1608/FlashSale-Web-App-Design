@@ -1,24 +1,20 @@
 import { ApiClient } from '../config/api';
 
 export interface UserResponse {
-  id: string;
+  id: number;
   username: string;
   email: string;
-  fullName: string;
-  profilePicture?: string;
-  createdAt: string;
-  updatedAt: string;
+  password?: string; // Usually not returned, but included for completeness
 }
 
 export interface UpdateUserRequest {
   username?: string;
   email?: string;
-  fullName?: string;
-  profilePicture?: string;
+  password?: string;
 }
 
 export interface UserOrder {
-  id: string;
+  id: number;
   item: string;
   date: string;
   price: number;
@@ -26,7 +22,7 @@ export interface UserOrder {
 }
 
 export class UserService {
-  static async getUserById(id: string): Promise<UserResponse> {
+  static async getUserById(id: number): Promise<UserResponse> {
     try {
       const response = await ApiClient.get<UserResponse>(`/users/${id}`);
       return response;
@@ -36,7 +32,7 @@ export class UserService {
     }
   }
 
-  static async updateUser(id: string, userData: UpdateUserRequest): Promise<UserResponse> {
+  static async updateUser(id: number, userData: UpdateUserRequest): Promise<UserResponse> {
     try {
       const response = await ApiClient.put<UserResponse>(`/users/${id}`, userData);
       return response;
@@ -46,7 +42,7 @@ export class UserService {
     }
   }
 
-  static async getUserOrders(userId: string): Promise<UserOrder[]> {
+  static async getUserOrders(userId: number): Promise<UserOrder[]> {
     try {
       const response = await ApiClient.get<UserOrder[]>(`/users/${userId}/orders`);
       return response;
@@ -56,9 +52,9 @@ export class UserService {
     }
   }
 
-  static async getUserProfile(id: string): Promise<UserResponse> {
+  static async getUserProfile(id: number): Promise<UserResponse> {
     try {
-      const response = await ApiClient.get<UserResponse>(`/users/${id}/profile`);
+      const response = await ApiClient.get<UserResponse>(`/users/${id}`);
       return response;
     } catch (error) {
       console.error(`Failed to fetch user profile ${id}:`, error);
