@@ -78,7 +78,7 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [checkoutSuccess, setCheckoutSuccess] = useState<boolean | null>(null);
   const [checkoutProduct, setCheckoutProduct] = useState<Product | null>(null);
-  const { products, setProducts } = useProducts();
+      const { products, setProducts, updateProductStock } = useProducts();
 
   // Control body scrolling based on current screen
   useEffect(() => {
@@ -121,12 +121,10 @@ export default function App() {
     setIsModalOpen(false);
     
     // Simulate checkout process
-    setTimeout(() => {
+    setTimeout(async () => {
       if (product.stock > 0) {
         // Success - update stock
-        setProducts(prev => prev.map(p => 
-          p.id === product.id ? { ...p, stock: p.stock - 1 } : p
-        ));
+        await updateProductStock(product.id, product.stock - 1);
         setCheckoutSuccess(true);
       } else {
         // Failure - out of stock

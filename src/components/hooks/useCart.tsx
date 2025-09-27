@@ -79,15 +79,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     };
 
     try {
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderPayload),
-      });
-
-      if (response.ok) {
+      const { OrderService } = await import('../../services/orderService');
+      const order = await OrderService.createOrder(orderPayload);
+      
+      if (order) {
         clearCart();
         return true;
       } else {

@@ -4,6 +4,7 @@ import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { User, Mail, Edit3, Save, X, ShoppingBag, Calendar, DollarSign } from 'lucide-react';
+import { useUserProfile } from './hooks/useUserProfile';
 
 interface UserData {
   fullName: string;
@@ -46,46 +47,7 @@ function CustomAvatar({ className = "" }: { className?: string }) {
 }
 
 export function UserProfile({ onBackClick }: UserProfileProps) {
-  // Mock user data
-  const [userData, setUserData] = useState<UserData>({
-    fullName: 'John Doe',
-    username: 'johndoe123',
-    email: 'john.doe@example.com',
-    profilePicture: '' // We'll use a custom avatar instead
-  });
-
-  // Mock order history
-  const [orders] = useState<Order[]>([
-    {
-      id: '1',
-      itemName: 'Premium Wireless Headphones',
-      date: '2024-01-15',
-      price: 79.99,
-      status: 'delivered'
-    },
-    {
-      id: '2',
-      itemName: 'Latest Smartphone Pro',
-      date: '2024-01-10',
-      price: 599.99,
-      status: 'shipped'
-    },
-    {
-      id: '3',
-      itemName: 'Ultra-Thin Gaming Laptop',
-      date: '2024-01-05',
-      price: 899.99,
-      status: 'completed'
-    },
-    {
-      id: '4',
-      itemName: 'Smart Fitness Watch',
-      date: '2023-12-28',
-      price: 149.99,
-      status: 'delivered'
-    }
-  ]);
-
+  const { userData, orders, loading, error, updateUserData } = useUserProfile();
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     username: userData.username,
@@ -105,14 +67,22 @@ export function UserProfile({ onBackClick }: UserProfileProps) {
     setIsEditing(!isEditing);
   };
 
-  const handleSave = () => {
-    setUserData(prev => ({
-      ...prev,
-      username: editForm.username,
-      email: editForm.email
-    }));
-    setIsEditing(false);
-    setEditForm(prev => ({ ...prev, password: '' }));
+  const handleSave = async () => {
+    try {
+      const success = await updateUserData({
+        username: editForm.username,
+        email: editForm.email,
+      });
+      
+      if (success) {
+        setEditForm(prev => ({ ...prev, password: '' })); // Clear password field after save
+        setIsEditing(false);
+      } else {
+        console.error('Failed to save user data');
+      }
+    } catch (error) {
+      console.error('Error saving user data:', error);
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
