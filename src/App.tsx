@@ -71,14 +71,14 @@ const mockProducts: Product[] = [
   }
 ];
 
-export default function App() {
+function AppContent() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [checkoutSuccess, setCheckoutSuccess] = useState<boolean | null>(null);
   const [checkoutProduct, setCheckoutProduct] = useState<Product | null>(null);
-      const { products, setProducts, updateProductStock } = useProducts();
+  const { products, setProducts, updateProductStock } = useProducts();
 
   // Control body scrolling based on current screen
   useEffect(() => {
@@ -93,6 +93,7 @@ export default function App() {
       document.body.style.overflow = 'auto';
     };
   }, [currentScreen]);
+
 
   const handleLogoClick = () => {
     setCurrentScreen('landing');
@@ -200,7 +201,15 @@ export default function App() {
         <FloatingCartButton onCartClick={() => setIsCartOpen(true)} />
       )}
       
-      <Toaster position="top-right" />
-    </div>
+          <Toaster position="top-right" />
+        </div>
+      );
+    }
+
+export default function App() {
+  return (
+    <CartProvider>
+      <AppContent />
+    </CartProvider>
   );
 }

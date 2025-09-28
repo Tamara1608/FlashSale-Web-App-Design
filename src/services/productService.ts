@@ -60,10 +60,10 @@ export class ProductService {
       id: response.id,
       name: response.name,
       description: response.description,
-      price: response.price,
+      price: Math.round(response.price * 100) / 100, // Ensure 2 decimal places
       stock: response.stock,
       // Mock frontend-only fields
-      originalPrice: Math.round(originalPrice * 100) / 100,
+      originalPrice: Math.round(originalPrice * 100) / 100, // Ensure 2 decimal places
       image: mockImages[response.id % mockImages.length],
       maxStock: response.stock + Math.floor(Math.random() * 50) + 10, // Random max stock
     };

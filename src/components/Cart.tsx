@@ -4,6 +4,7 @@ import { ImageWithFallback } from './ui/ImageWithFallback';
 import { useCart } from './hooks/useCart';
 import { Trash2, Plus, Minus, ShoppingCart, X, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { OrderConfirmationModal } from './OrderConfirmationModal';
 
 interface CartProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface CartProps {
 export function Cart({ isOpen, onClose }: CartProps) {
   const { items, removeFromCart, updateQuantity, getTotalPrice, getTotalItems, createOrder } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   // Lock body scroll when cart is open
   useEffect(() => {
@@ -43,12 +45,10 @@ export function Cart({ isOpen, onClose }: CartProps) {
     try {
       const success = await createOrder();
       if (success) {
-        toast.success('🎉 Order placed successfully! Your items will be shipped soon.', {
-          duration: 5000,
-        });
-        onClose();
+        setShowConfirmation(true); // Show confirmation modal
+        onClose(); // Close cart after showing modal
       } else {
-        toast.error('❌ Failed to place order. Please try again.', {
+        toast.error('❌ Failed to buy items. Please try again.', {
           duration: 4000,
         });
       }
@@ -185,14 +185,14 @@ export function Cart({ isOpen, onClose }: CartProps) {
               Shipping and taxes calculated at checkout
             </p>
             
-            {/* Checkout Button */}
+            {/* Buy Button */}
             <div className="flex items-center gap-2">
               <Button
                 onClick={handleCheckout}
                 disabled={isProcessing}
                 className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 text-lg font-semibold"
               >
-                {isProcessing ? 'Processing...' : 'Proceed to Checkout'}
+                {isProcessing ? 'Processing...' : 'Buy'}
               </Button>
               <Button
                 variant="ghost"
@@ -205,6 +205,12 @@ export function Cart({ isOpen, onClose }: CartProps) {
           </div>
         )}
       </div>
+      
+      {/* Order Confirmation Modal */}
+      <OrderConfirmationModal
+        isOpen={showConfirmation}
+        onClose={() => setShowConfirmation(false)}
+      />
     </div>
   );
 }

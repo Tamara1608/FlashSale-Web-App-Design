@@ -31,6 +31,14 @@ export interface CreateOrderRequest {
   totalPrice: number;
 }
 
+export interface BuyRequest {
+  userId: number;
+  products: Array<{
+    productId: number;
+    quantity: number;
+  }>;
+}
+
 export class OrderService {
   static async createOrder(orderData: CreateOrderRequest): Promise<OrderResponse> {
     try {
@@ -39,6 +47,16 @@ export class OrderService {
     } catch (error) {
       console.error('Failed to create order:', error);
       throw new Error('Failed to create order');
+    }
+  }
+
+  static async buyFlashSale(buyData: BuyRequest): Promise<boolean> {
+    try {
+      const response = await ApiClient.post<any>('/flashsale/buy', buyData);
+      return true;
+    } catch (error) {
+      console.error('Failed to buy flash sale items:', error);
+      throw new Error('Failed to buy flash sale items');
     }
   }
 

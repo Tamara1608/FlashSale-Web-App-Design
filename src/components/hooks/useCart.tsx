@@ -69,28 +69,27 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const createOrder = async (): Promise<boolean> => {
     if (items.length === 0) return false;
 
-    const orderPayload: OrderPayload = {
+    const buyPayload = {
       userId: 1, // In a real app, this would come from auth context
-      items: items.map(item => ({
+      products: items.map(item => ({
         productId: item.product.id,
         quantity: item.quantity
-      })),
-      totalPrice: getTotalPrice()
+      }))
     };
 
     try {
       const { OrderService } = await import('../../services/orderService');
-      const order = await OrderService.createOrder(orderPayload);
+      const success = await OrderService.buyFlashSale(buyPayload);
       
-      if (order) {
+      if (success) {
         clearCart();
         return true;
       } else {
-        console.error('Failed to create order');
+        console.error('Failed to buy items');
         return false;
       }
     } catch (error) {
-      console.error('Error creating order:', error);
+      console.error('Error buying items:', error);
       return false;
     }
   };

@@ -12,40 +12,47 @@ This guide explains how to connect your React frontend to your Java backend.
 
 ### Products API
 ```
-GET /api/products
+GET /products
 - Returns: Array of products with fields: id, name, description, price, stock
 
-GET /api/products/{id}
+GET /products/{id}
 - Returns: Single product details
 
-PUT /api/products/{id}/stock
+PUT /products/{id}/stock
 - Body: { "stock": number }
 - Returns: Updated product
 ```
 
 ### Orders API
 ```
-POST /api/orders
+POST /orders
 - Body: { "userId": number, "items": [{ "productId": number, "quantity": number }], "totalPrice": number }
 - Returns: Created order with OrderItem details
 
-GET /api/orders/{id}
+GET /orders/{id}
 - Returns: Order details with items
 
-GET /api/orders/user/{userId}
+GET /orders/user/{userId}
 - Returns: Array of user orders
+```
+
+### Flash Sale API
+```
+POST /flashsale/buy
+- Body: { "userId": number, "products": [{ "productId": number, "quantity": number }] }
+- Returns: Purchase result
 ```
 
 ### Users API
 ```
-GET /api/users/{id}
+GET /users/{id}
 - Returns: User details (id, username, email)
 
-PUT /api/users/{id}
+PUT /users/{id}
 - Body: { "username": string, "email": string, "password": string }
 - Returns: Updated user
 
-GET /api/users/{id}/orders
+GET /users/{id}/orders
 - Returns: Array of user orders
 ```
 
@@ -54,7 +61,7 @@ GET /api/users/{id}/orders
 Create a `.env.local` file in your project root:
 
 ```env
-REACT_APP_API_URL=http://localhost:8080/api
+VITE_API_URL=http://localhost:8080/api
 ```
 
 ## CORS Configuration (Backend)
@@ -192,4 +199,4 @@ The frontend includes fallback to mock data if the API is unavailable, ensuring 
 
 ## Production Deployment
 
-For production, update the `REACT_APP_API_URL` to point to your production backend URL.
+For production, update the `VITE_API_URL` to point to your production backend URL.
