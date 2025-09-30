@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import React from 'react';
 import { Button } from './ui/button';
-import { ShoppingCart, User } from 'lucide-react';
+import { ShoppingCart, User, LogOut } from 'lucide-react';
+import React from 'react';
+import AuthModal from './AuthModal';
 import { useCart } from './hooks/useCart';
+import { useAuth } from './hooks/useAuth';
 
 interface HeaderProps {
   onLogoClick: () => void;
@@ -15,6 +17,8 @@ interface HeaderProps {
 export function Header({ onLogoClick, saleEndsAt, transparent = false, onCartClick, onProfileClick }: HeaderProps) {
   const [timeLeft, setTimeLeft] = useState({ hours: 23, minutes: 59, seconds: 30 });
   const { getTotalItems } = useCart();
+  const { user, isAuthenticated, logout } = useAuth();
+  const [authOpen, setAuthOpen] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -134,37 +138,77 @@ export function Header({ onLogoClick, saleEndsAt, transparent = false, onCartCli
             </div>
           </div>
           
-          {!transparent && onProfileClick && (
-            <Button
-              onClick={onProfileClick}
-              variant="outline"
-              className="w-12 h-12 rounded-full bg-white hover:bg-gray-50 border-2 border-gray-300 flex items-center justify-center"
+          {isAuthenticated ? (
+            <div className="flex items-center gap-4 sm:gap-6">
+              <span className="text-sm text-gray-700">Welcome, {user?.username}</span>
+              <Button
+                onClick={onProfileClick}
+                variant="outline"
+                className="w-10 h-10 rounded-full bg-white hover:bg-gray-50 border-2 border-gray-300 flex items-center justify-center shadow-md"
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  backgroundColor: 'white',
+                  border: '2px solid #d1d5db',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <User 
+                  className="h-4 w-4 text-gray-700" 
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                    color: '#374151'
+                  }}
+                />
+              </Button>
+              <Button
+                onClick={logout}
+                variant="outline"
+                className="w-10 h-10 rounded-full bg-white hover:bg-gray-50 border-2 border-gray-300 flex items-center justify-center shadow-md"
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  backgroundColor: 'white',
+                  border: '2px solid #d1d5db',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <LogOut 
+                  className="h-4 w-4 text-gray-700" 
+                  style={{
+                    width: '16px',
+                    height: '16px',
+                    color: '#374151'
+                  }}
+                />
+              </Button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setAuthOpen(true)}
+              className="px-5 py-2 rounded-full text-white text-sm font-semibold"
               style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '50%',
-                backgroundColor: 'white',
-                border: '2px solid #d1d5db',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                marginLeft: '32px'
+                background: 'linear-gradient(90deg,#ff416c,#ff7aa2)',
+                boxShadow: '0 6px 16px rgba(255,65,108,0.35)'
               }}
             >
-              <User 
-                className="h-5 w-5 text-gray-700" 
-                style={{
-                  width: '20px',
-                  height: '20px',
-                  color: '#374151'
-                }}
-              />
-            </Button>
+              Login
+            </button>
           )}
         </div>
       </div>
+      <AuthModal open={authOpen} onOpenChange={setAuthOpen} />
     </header>
   );
 }

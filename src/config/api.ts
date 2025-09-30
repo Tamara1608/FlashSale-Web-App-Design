@@ -16,10 +16,11 @@ export const API_ENDPOINTS = {
   USER_BY_ID: (id: number) => `${API_BASE_URL}/users/${id}`,
   USER_PROFILE: (id: number) => `${API_BASE_URL}/users/${id}`,
   
-  // Auth (if you have authentication)
+  // Auth (only routes provided by backend)
   LOGIN: `${API_BASE_URL}/auth/login`,
-  REGISTER: `${API_BASE_URL}/auth/register`,
-  REFRESH: `${API_BASE_URL}/auth/refresh`,
+  SIGNUP: `${API_BASE_URL}/auth/signup`,
+  LOGOUT: `${API_BASE_URL}/auth/logout`,
+  ME: `${API_BASE_URL}/auth/me`,
 } as const;
 
 // API Request helper

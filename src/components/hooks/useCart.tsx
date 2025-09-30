@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Product, CartItem, OrderPayload } from '../types';
+import { useAuth } from './useAuth';
 
 interface CartContextType {
   items: CartItem[];
@@ -16,6 +17,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const { userId } = useAuth();
 
   const addToCart = (product: Product, quantity: number = 1) => {
     setItems(prev => {
@@ -68,9 +70,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const createOrder = async (): Promise<boolean> => {
     if (items.length === 0) return false;
+    if (!userId) return false;
 
     const buyPayload = {
-      userId: 1, // In a real app, this would come from auth context
+      userId: userId,
       products: items.map(item => ({
         productId: item.product.id,
         quantity: item.quantity

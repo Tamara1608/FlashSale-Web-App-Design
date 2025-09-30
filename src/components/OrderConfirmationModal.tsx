@@ -77,7 +77,7 @@ export function OrderConfirmationModal({
               className="text-sm font-medium"
               style={{ color: '#34C759' }}
             >
-              Thanks for shopping our Flash Sale!
+              🎉Thanks for shopping at Flash Sale!
             </span>
           </div>
 

@@ -8,6 +8,7 @@ import { Cart } from './components/Cart';
 import { UserProfile } from './components/UserProfile';
 import { FloatingCartButton } from './components/FloatingCartButton';
 import { CartProvider } from './components/hooks/useCart';
+import { AuthProvider } from './components/hooks/useAuth';
 import { Product } from './components/types';
 import { useProducts } from './components/hooks/useProducts';
 import { Toaster } from 'sonner';
@@ -16,7 +17,7 @@ type Screen = 'landing' | 'products' | 'checkout' | 'profile';
 
 const mockProducts: Product[] = [
   {
-    id: '1',
+    id: 1,
     name: 'Premium Wireless Headphones',
     price: 79.99,
     originalPrice: 199.99,
@@ -25,7 +26,7 @@ const mockProducts: Product[] = [
     maxStock: 50
   },
   {
-    id: '2',
+    id: 2,
     name: 'Latest Smartphone Pro',
     price: 599.99,
     originalPrice: 999.99,
@@ -34,7 +35,7 @@ const mockProducts: Product[] = [
     maxStock: 100
   },
   {
-    id: '3',
+    id: 3,
     name: 'Ultra-Thin Gaming Laptop',
     price: 899.99,
     originalPrice: 1499.99,
@@ -43,7 +44,7 @@ const mockProducts: Product[] = [
     maxStock: 25
   },
   {
-    id: '4',
+    id: 4,
     name: 'Smart Fitness Watch',
     price: 149.99,
     originalPrice: 299.99,
@@ -52,7 +53,7 @@ const mockProducts: Product[] = [
     maxStock: 75
   },
   {
-    id: '5',
+    id: 5,
     name: 'Wireless Gaming Controller',
     price: 39.99,
     originalPrice: 79.99,
@@ -61,7 +62,7 @@ const mockProducts: Product[] = [
     maxStock: 60
   },
   {
-    id: '6',
+    id: 6,
     name: 'Professional Camera Kit',
     price: 449.99,
     originalPrice: 799.99,
@@ -208,8 +209,8 @@ function AppContent() {
 
 export default function App() {
   return (
-    <CartProvider>
-      <AppContent />
-    </CartProvider>
+    <AuthProvider children={
+      <CartProvider children={<AppContent />} />
+    } />
   );
 }

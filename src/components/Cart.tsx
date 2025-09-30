@@ -5,6 +5,8 @@ import { useCart } from './hooks/useCart';
 import { Trash2, Plus, Minus, ShoppingCart, X, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { OrderConfirmationModal } from './OrderConfirmationModal';
+import { useAuth } from './hooks/useAuth';
+import AuthModal from './AuthModal';
 
 interface CartProps {
   isOpen: boolean;
@@ -15,6 +17,8 @@ export function Cart({ isOpen, onClose }: CartProps) {
   const { items, removeFromCart, updateQuantity, getTotalPrice, getTotalItems, createOrder } = useCart();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const { isAuthenticated } = useAuth();
+  const [authOpen, setAuthOpen] = useState(false);
 
   // Lock body scroll when cart is open
   useEffect(() => {
@@ -40,6 +44,11 @@ export function Cart({ isOpen, onClose }: CartProps) {
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
+    if (!isAuthenticated) {
+      setAuthOpen(true);
+      toast.info('Please log in to complete your purchase.');
+      return;
+    }
     
     setIsProcessing(true);
     try {
@@ -211,6 +220,7 @@ export function Cart({ isOpen, onClose }: CartProps) {
         isOpen={showConfirmation}
         onClose={() => setShowConfirmation(false)}
       />
+      <AuthModal open={authOpen} onOpenChange={setAuthOpen} />
     </div>
   );
 }
