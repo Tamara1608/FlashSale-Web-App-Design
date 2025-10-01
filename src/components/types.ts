@@ -4,10 +4,13 @@ export interface Product {
   description?: string; // Added description field
   price: number;
   stock: number;
-  // Frontend-only fields for display (will be mocked)
+  totalStock: number;
+  percentageOff: number;
+  imageLink?: string; // Backend field for image URL
+  // Frontend-only fields for display (will be calculated)
   originalPrice?: number;
-  image?: string;
-  maxStock?: number;
+  image?: string; // Keep for backward compatibility
+  maxStock?: number; // Keep for backward compatibility
 }
 
 export interface CartItem {

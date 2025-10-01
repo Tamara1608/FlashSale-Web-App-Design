@@ -42,7 +42,7 @@ export class AuthService {
       const response = await ApiClient.post<any>(API_ENDPOINTS.LOGIN, payload);
       console.log('Login response:', response);
       
-      // Handle different response structures
+   
       const user: AuthUser = {
         id: response.id || response.userId || 1,
         username: response.username || payload.username,
@@ -65,7 +65,6 @@ export class AuthService {
       const response = await ApiClient.post<any>(API_ENDPOINTS.SIGNUP, payload);
       console.log('Signup response:', response);
       
-      // Handle different response structures
       const user: AuthUser = {
         id: response.id || response.userId || 1,
         username: response.username || payload.username,
@@ -87,7 +86,6 @@ export class AuthService {
     try {
       await ApiClient.post<void>(API_ENDPOINTS.LOGOUT);
     } catch {
-      // ignore network errors for logout
     } finally {
       this.setUser(null);
     }

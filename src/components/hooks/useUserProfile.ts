@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { UserService, UserResponse, UserOrder } from '../../services/userService';
+import { useAuth } from './useAuth';
 
 export interface UserData {
   fullName: string; // Mock field for frontend display
@@ -8,11 +9,12 @@ export interface UserData {
   profilePicture: string; // Mock field for frontend display
 }
 
-export function useUserProfile(userId: number = 1) {
+export function useUserProfile() {
+  const { userId, user } = useAuth();
   const [userData, setUserData] = useState<UserData>({
-    fullName: 'John Doe', // Mock value
-    username: 'johndoe123',
-    email: 'john.doe@example.com',
+    fullName: user?.username || 'User', // Use authenticated user's name
+    username: user?.username || '',
+    email: user?.email || '',
     profilePicture: '' // Mock value
   });
   const [orders, setOrders] = useState<UserOrder[]>([]);
@@ -21,68 +23,43 @@ export function useUserProfile(userId: number = 1) {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!userId) {
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
 
-        // Fetch user profile and orders in parallel
-        const [userResponse, ordersResponse] = await Promise.all([
-          UserService.getUserProfile(userId),
-          UserService.getUserOrders(userId)
-        ]);
-
+        // Update user data from auth context
         setUserData({
-          fullName: 'John Doe', // Mock value since backend doesn't have this field
-          username: userResponse.username,
-          email: userResponse.email,
-          profilePicture: '' // Mock value since backend doesn't have this field
+          fullName: user?.username || 'User',
+          username: user?.username || '',
+          email: user?.email || '',
+          profilePicture: ''
         });
 
+        // Fetch real orders from backend
+        console.log('Fetching orders for user:', userId);
+        const ordersResponse = await UserService.getUserOrders(userId);
+        console.log('Orders received:', ordersResponse);
         setOrders(ordersResponse);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch user data');
         console.error('Error fetching user data:', err);
-        
-        // Fallback to mock data if API fails
-        setOrders([
-          {
-            id: '1',
-            item: 'Premium Wireless Headphones',
-            date: 'January 15, 2024',
-            price: 79.99,
-            status: 'delivered'
-          },
-          {
-            id: '2',
-            item: 'Latest Smartphone Pro',
-            date: 'February 01, 2024',
-            price: 599.99,
-            status: 'shipped'
-          },
-          {
-            id: '3',
-            item: 'Ultra-Thin Gaming Laptop',
-            date: 'March 10, 2024',
-            price: 899.99,
-            status: 'completed'
-          },
-          {
-            id: '4',
-            item: 'Smart Fitness Watch',
-            date: 'April 05, 2024',
-            price: 149.99,
-            status: 'delivered'
-          },
-        ]);
+        setOrders([]); // Show empty orders instead of mock data
       } finally {
         setLoading(false);
       }
     };
 
     fetchUserData();
-  }, [userId]);
+  }, [userId, user]);
 
   const updateUserData = async (updatedData: Partial<UserData>): Promise<boolean> => {
+    if (!userId) return false;
+    
     try {
       const response = await UserService.updateUser(userId, updatedData);
       

@@ -52,7 +52,9 @@ export class OrderService {
 
   static async buyFlashSale(buyData: BuyRequest): Promise<boolean> {
     try {
+      console.log('Sending buy request:', buyData);
       const response = await ApiClient.post<any>('/flashsale/buy', buyData);
+      console.log('Buy response received:', response);
       return true;
     } catch (error) {
       console.error('Failed to buy flash sale items:', error);

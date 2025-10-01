@@ -83,12 +83,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       const { OrderService } = await import('../../services/orderService');
       const success = await OrderService.buyFlashSale(buyPayload);
+      console.log('OrderService returned:', success);
       
       if (success) {
+        console.log('Order successful, clearing cart');
         clearCart();
         return true;
       } else {
-        console.error('Failed to buy items');
+        console.error('OrderService returned false');
         return false;
       }
     } catch (error) {

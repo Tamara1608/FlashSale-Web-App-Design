@@ -7,6 +7,9 @@ export interface ProductResponse {
   description?: string;
   price: number;
   stock: number;
+  imageLink: string;
+  totalStock: number;
+  percentageOff: number;
 }
 
 export class ProductService {
@@ -43,29 +46,25 @@ export class ProductService {
   }
 
   private static mapToProduct(response: ProductResponse): Product {
-    // Generate mock values for frontend display
-    const originalPrice = response.price * (1.2 + Math.random() * 0.8); // 20-100% markup
-    const mockImages = [
-      'https://images.unsplash.com/photo-1623788728910-23180a99871d?auto=format&fit=crop&w=1080&q=80',
-      'https://images.unsplash.com/photo-1675953935267-e039f13ddd79?auto=format&fit=crop&w=1080&q=80',
-      'https://images.unsplash.com/photo-1754928864131-21917af96dfd?auto=format&fit=crop&w=1080&q=80',
-      'https://images.unsplash.com/photo-1716234479503-c460b87bdf98?auto=format&fit=crop&w=1080&q=80',
-      'https://images.unsplash.com/photo-1694857731920-43e44e75fbec?auto=format&fit=crop&w=1080&q=80',
-      'https://images.unsplash.com/photo-1729857037662-221cc636782a?auto=format&fit=crop&w=1080&q=80',
-      'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=1080&q=80',
-      'https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=1080&q=80',
-    ];
+    // Calculate original price from percentage off if available, otherwise use same price
+    let originalPrice: number;
+    if (response.percentageOff > 0) {
+      originalPrice = response.price / (1 - response.percentageOff / 100);
+    } else {
+      // No discount, original price is the same as current price
+      originalPrice = response.price;
+    }
     
     return {
       id: response.id,
       name: response.name,
       description: response.description,
-      price: Math.round(response.price * 100) / 100, // Ensure 2 decimal places
+      price: Number(response.price.toFixed(2)), 
       stock: response.stock,
-      // Mock frontend-only fields
-      originalPrice: Math.round(originalPrice * 100) / 100, // Ensure 2 decimal places
-      image: mockImages[response.id % mockImages.length],
-      maxStock: response.stock + Math.floor(Math.random() * 50) + 10, // Random max stock
+      originalPrice: Number(originalPrice.toFixed(2)),
+      imageLink: response.imageLink,
+      totalStock: response.totalStock,
+      percentageOff: response.percentageOff,
     };
   }
 }

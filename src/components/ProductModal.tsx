@@ -21,6 +21,12 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
 
   if (!product) return null;
 
+  const originalPrice = product.percentageOff > 0 
+    ? product.price / (1 - product.percentageOff / 100)
+    : product.originalPrice;
+
+  const imageUrl = product.imageLink;
+
   const handleAddToCart = () => {
     if (product.stock === 0) return;
     
@@ -32,7 +38,9 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
     onClose();
   };
 
-  const discountPercentage = Math.round((1 - product.price / product.originalPrice) * 100);
+  const discountPercentage = product.percentageOff > 0 
+    ? product.percentageOff 
+    : Math.round((1 - product.price / (originalPrice || product.price)) * 100);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -46,9 +54,18 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
           {/* Product Image */}
-          <div className="aspect-square overflow-hidden bg-black">
+          <div className="aspect-square overflow-hidden bg-black relative">
+            {/* Percentage Off Badge */}
+            {product.percentageOff > 0 && (
+              <div className="absolute top-4 left-4 z-10">
+                <div className="bg-red-500 text-white px-3 py-2 rounded-full text-sm font-bold">
+                  -{product.percentageOff}% OFF
+                </div>
+              </div>
+            )}
+            
             <ImageWithFallback
-              src={product.image}
+              src={imageUrl}
               alt={product.name}
               className="w-full h-full object-cover"
             />
@@ -62,14 +79,16 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
               </h2>
               
               <div className="mb-4">
-                <Price price={product.price} originalPrice={product.originalPrice} size="lg" />
+                <Price price={product.price} originalPrice={originalPrice} size="lg" />
               </div>
               
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-6">
-                <span className="text-red-700 font-medium">
-                  Save {discountPercentage}% - Limited Time Only!
-                </span>
-              </div>
+              {discountPercentage > 0 && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-6">
+                  <span className="text-red-700 font-medium">
+                    Save {discountPercentage}% - Limited Time Only!
+                  </span>
+                </div>
+              )}
             </div>
             
             {/* Stock Level */}
@@ -80,7 +99,7 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
                   {product.stock === 0 ? 'Out of Stock' : `Only ${product.stock} left!`}
                 </span>
               </div>
-              <StockIndicator stock={product.stock} maxStock={product.maxStock} size="md" />
+              <StockIndicator stock={product.stock} maxStock={product.totalStock} size="md" />
             </div>
             
             {/* Quantity Selector */}

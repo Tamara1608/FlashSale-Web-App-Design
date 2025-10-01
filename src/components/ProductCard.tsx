@@ -12,14 +12,29 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onProductClick }: ProductCardProps) {
+  // Calculate original price from percentage off
+  const originalPrice = product.percentageOff > 0 
+    ? product.price / (1 - product.percentageOff / 100)
+    : product.originalPrice;
 
+  // Use imageLink from backend
+  const imageUrl = product.imageLink;
 
   return (
     <Card className="group cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 overflow-hidden">
       <div onClick={() => onProductClick(product)}>
         <div className="aspect-square overflow-hidden bg-gray-50 relative">
+          {/* Percentage Off Badge */}
+          {product.percentageOff > 0 && (
+            <div className="absolute top-2 left-2 z-10">
+              <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                -{product.percentageOff}%
+              </div>
+            </div>
+          )}
+          
           <ImageWithFallback
-            src={product.image}
+            src={imageUrl}
             alt={product.name}
             className={`w-full h-full object-cover transition-transform duration-300 ${
               product.stock > 0 ? 'group-hover:scale-105' : ''
@@ -71,9 +86,9 @@ export function ProductCard({ product, onProductClick }: ProductCardProps) {
           <h3 className="font-medium text-gray-900 line-clamp-2 group-hover:text-red-600 transition-colors">
             {product.name}
           </h3>
-          <Price price={product.price} originalPrice={product.originalPrice} size="md" />
+          <Price price={product.price} originalPrice={originalPrice} size="md" />
           
-          <StockIndicator stock={product.stock} maxStock={product.maxStock} size="sm" />
+          <StockIndicator stock={product.stock} maxStock={product.totalStock} size="sm" />
         </div>
       </div>
       

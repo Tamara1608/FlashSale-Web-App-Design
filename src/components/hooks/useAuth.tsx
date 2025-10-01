@@ -16,7 +16,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(AuthService.getUser());
 
   useEffect(() => {
-    // Keep state in sync with localStorage across tabs
     const handler = () => setUser(AuthService.getUser());
     window.addEventListener('storage', handler);
     return () => window.removeEventListener('storage', handler);

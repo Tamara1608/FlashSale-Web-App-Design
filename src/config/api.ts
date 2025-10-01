@@ -16,14 +16,13 @@ export const API_ENDPOINTS = {
   USER_BY_ID: (id: number) => `${API_BASE_URL}/users/${id}`,
   USER_PROFILE: (id: number) => `${API_BASE_URL}/users/${id}`,
   
-  // Auth (only routes provided by backend)
+  // Auth 
   LOGIN: `${API_BASE_URL}/auth/login`,
   SIGNUP: `${API_BASE_URL}/auth/signup`,
   LOGOUT: `${API_BASE_URL}/auth/logout`,
   ME: `${API_BASE_URL}/auth/me`,
 } as const;
 
-// API Request helper
 export class ApiClient {
   private static baseURL = API_BASE_URL;
 
@@ -39,6 +38,7 @@ export class ApiClient {
 
     const config: RequestInit = {
       ...options,
+      credentials: 'include', 
       headers: {
         ...defaultHeaders,
         ...options.headers,
@@ -52,13 +52,11 @@ export class ApiClient {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      // Check if response has content before trying to parse JSON
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         const data = await response.json();
         return data;
       } else {
-        // For non-JSON responses (like empty 200 responses), return null
         return null as T;
       }
     } catch (error) {
