@@ -3,19 +3,22 @@ import { UserService, UserResponse, UserOrder } from '../../services/userService
 import { useAuth } from './useAuth';
 
 export interface UserData {
-  fullName: string; // Mock field for frontend display
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
-  profilePicture: string; // Mock field for frontend display
+  password?: string;
+  profilePicture: string;
 }
 
 export function useUserProfile() {
   const { userId, user } = useAuth();
   const [userData, setUserData] = useState<UserData>({
-    fullName: user?.username || 'User', // Use authenticated user's name
+    firstName: user?.firstName,
+    lastName: user?.lastName,
     username: user?.username || '',
     email: user?.email || '',
-    profilePicture: '' // Mock value
+    profilePicture: ''
   });
   const [orders, setOrders] = useState<UserOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,9 +35,9 @@ export function useUserProfile() {
         setLoading(true);
         setError(null);
 
-        // Update user data from auth context
         setUserData({
-          fullName: user?.username || 'User',
+          firstName: user?.firstName || 'John',
+          lastName: user?.lastName || 'Doe',
           username: user?.username || '',
           email: user?.email || '',
           profilePicture: ''
@@ -48,7 +51,7 @@ export function useUserProfile() {
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch user data');
         console.error('Error fetching user data:', err);
-        setOrders([]); // Show empty orders instead of mock data
+        setOrders([]); 
       } finally {
         setLoading(false);
       }

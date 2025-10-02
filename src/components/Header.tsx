@@ -30,7 +30,6 @@ export function Header({ onLogoClick, saleEndsAt, transparent = false, onCartCli
         } else if (prev.hours > 0) {
           return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
         }
-        // Reset to 23:59:59 when it reaches 00:00:00
         return { hours: 23, minutes: 59, seconds: 59 };
       });
     }, 1000);
@@ -140,7 +139,7 @@ export function Header({ onLogoClick, saleEndsAt, transparent = false, onCartCli
           
           {isAuthenticated ? (
             <div className="flex items-center gap-4 sm:gap-6">
-              <span className="text-sm text-gray-700">Welcome, {user?.username}</span>
+              <span className="text-sm text-gray-700">Welcome, {user?.firstName}</span>
               <Button
                 onClick={onProfileClick}
                 variant="outline"
@@ -148,7 +147,7 @@ export function Header({ onLogoClick, saleEndsAt, transparent = false, onCartCli
                 style={{
                   width: '40px',
                   height: '40px',
-                  borderRadius: '50%',
+                  borderRadius: '60%',
                   backgroundColor: 'white',
                   border: '2px solid #d1d5db',
                   display: 'flex',
@@ -174,7 +173,7 @@ export function Header({ onLogoClick, saleEndsAt, transparent = false, onCartCli
                 style={{
                   width: '40px',
                   height: '40px',
-                  borderRadius: '50%',
+                  borderRadius: '60%',
                   backgroundColor: 'white',
                   border: '2px solid #d1d5db',
                   display: 'flex',
@@ -197,13 +196,13 @@ export function Header({ onLogoClick, saleEndsAt, transparent = false, onCartCli
           ) : (
             <button
               onClick={() => setAuthOpen(true)}
-              className="px-5 py-2 rounded-full text-white text-sm font-semibold"
+              className="px-6 py-3 rounded-lg text-white text-sm font-semibold flex items-center justify-center"
               style={{
                 background: 'linear-gradient(90deg,#ff416c,#ff7aa2)',
                 boxShadow: '0 6px 16px rgba(255,65,108,0.35)'
               }}
             >
-              Login
+              Sign In
             </button>
           )}
         </div>

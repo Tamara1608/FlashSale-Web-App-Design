@@ -5,9 +5,12 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { User, Mail, Edit3, Save, X, ShoppingBag, Calendar, DollarSign } from 'lucide-react';
 import { useUserProfile } from './hooks/useUserProfile';
+import { IconAvatar } from './ui/IconAvatar';
 
 interface UserData {
   fullName: string;
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   profilePicture: string;
@@ -53,16 +56,12 @@ function CustomAvatar({
             alt={`${username}'s profile`}
             className="w-full h-full object-cover"
             onError={(e) => {
-              // Fallback to default icon if image fails to load
               const target = e.target as HTMLImageElement;
               target.style.display = 'none';
               target.nextElementSibling?.classList.remove('hidden');
             }}
           />
         ) : null}
-        <div className={`w-full h-full flex items-center justify-center ${imageUrl ? 'hidden' : ''}`}>
-          <User className="w-8 h-8 text-white" />
-        </div>
       </div>
     </div>
   );
@@ -74,8 +73,7 @@ export function UserProfile({ onBackClick }: UserProfileProps) {
   const [editForm, setEditForm] = useState({
     username: userData.username,
     email: userData.email,
-    password: '',
-    profilePicture: userData.profilePicture
+    password: ''
   });
 
   const handleEditToggle = () => {
@@ -84,8 +82,7 @@ export function UserProfile({ onBackClick }: UserProfileProps) {
       setEditForm({
         username: userData.username,
         email: userData.email,
-        password: '',
-        profilePicture: userData.profilePicture
+        password: ''
       });
     }
     setIsEditing(!isEditing);
@@ -96,11 +93,11 @@ export function UserProfile({ onBackClick }: UserProfileProps) {
       const success = await updateUserData({
         username: editForm.username,
         email: editForm.email,
-        profilePicture: editForm.profilePicture,
+        password: editForm.password,
       });
       
       if (success) {
-        setEditForm(prev => ({ ...prev, password: '' })); // Clear password field after save
+        setEditForm(prev => ({ ...prev, password: '' }));
         setIsEditing(false);
       } else {
         console.error('Failed to save user data');
@@ -179,11 +176,15 @@ export function UserProfile({ onBackClick }: UserProfileProps) {
 
             {/* User Information */}
             <div className="flex-1">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-4 space-y-1">
                 <div>
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-1">{userData.fullName}</h2>
-                  <p className="text-sm text-gray-600">
-                    Nice to have you here, <span className="font-medium text-blue-600">{userData.username}</span>! 👋
+                  <IconAvatar 
+                    iconSrc="/icons/woman.png"
+                    alt="User Avatar"
+                    name={`${userData.firstName} ${userData.lastName}`}
+                  />
+                  <p className="text-sm text-gray-600 mt-2">
+                    Nice to have you here, <span className="font-medium text-blue-600">{userData.firstName}</span>! 👋
                   </p>
                 </div>
                 <Button
@@ -207,20 +208,31 @@ export function UserProfile({ onBackClick }: UserProfileProps) {
 
               {!isEditing ? (
                 /* Display Mode */
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <User className="w-5 h-5 text-gray-500" />
-                    <span className="text-gray-700">
-                      <strong>Username:</strong> {userData.username}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-gray-500" />
-                    <span className="text-gray-700">
-                      <strong>Email:</strong> {userData.email}
-                    </span>
-                  </div>
+                <div className="space-y-2">
+
+              {/* Username */}
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-teal-500 flex items-center justify-center shadow-md">
+                  <User className="w-6 h-6" style={{ color: 'gray' }} />
                 </div>
+                <div>
+                  <p className="text-sm text-gray-500">Username</p>
+                  <p className="font-medium text-gray-900">{userData.username}</p>
+                </div>
+                  </div>
+
+              {/* Email */}
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center shadow-md">
+                  <Mail className="w-5 h-5" style={{ color: 'gray' }} />
+                  </div>
+                <div>
+                  <p className="text-sm text-gray-500">Email</p>
+                  <p className="font-medium text-gray-900">{userData.email}</p>
+                </div>
+              </div>
+            </div>
+
               ) : (
                 /* Edit Mode */
                 <div className="space-y-4">
@@ -240,17 +252,6 @@ export function UserProfile({ onBackClick }: UserProfileProps) {
                       type="email"
                       value={editForm.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="profilePicture">Profile Picture URL (optional)</Label>
-                    <Input
-                      id="profilePicture"
-                      type="url"
-                      value={editForm.profilePicture}
-                      onChange={(e) => handleInputChange('profilePicture', e.target.value)}
-                      placeholder="https://example.com/your-image.jpg"
                       className="mt-1"
                     />
                   </div>
@@ -322,7 +323,7 @@ export function UserProfile({ onBackClick }: UserProfileProps) {
                   }}
                 >
                   {/* Order Header */}
-                  <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
@@ -335,7 +336,7 @@ export function UserProfile({ onBackClick }: UserProfileProps) {
                         {formatDate(order.orderDate)}
                       </div>
                     </div>
-                    <div className="flex items-center gap-4 mt-2 md:mt-0">
+                    <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2 text-lg font-bold text-green-600 bg-green-50 px-4 py-2 rounded-lg">
                         <DollarSign className="w-5 h-5" />
                         ${order.totalPrice.toFixed(2)}
@@ -392,7 +393,7 @@ export function UserProfile({ onBackClick }: UserProfileProps) {
                                 {item.product.percentageOff > 0 && (
                                   <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full font-semibold">
                                     -{item.product.percentageOff}%
-                                  </span>
+                    </span>
                                 )}
                               </div>
                               <div className="flex items-center gap-2 text-sm text-gray-600">

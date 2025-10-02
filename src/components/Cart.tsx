@@ -111,7 +111,7 @@ export function Cart({ isOpen, onClose }: CartProps) {
                     {/* Product Image */}
                     <div className="w-20 h-20 rounded-lg overflow-hidden bg-gray-50 flex-shrink-0">
                       <ImageWithFallback
-                        src={item.product.image}
+                        src={item.product.imageLink}
                         alt={item.product.name}
                         className="w-full h-full object-cover"
                       />

@@ -21,9 +21,8 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
 
   if (!product) return null;
 
-  const originalPrice = product.percentageOff > 0 
-    ? product.price / (1 - product.percentageOff / 100)
-    : product.originalPrice;
+  // Use original price from ProductService (already calculated from DB)
+  const originalPrice = product.originalPrice;
 
   const imageUrl = product.imageLink;
 
@@ -55,15 +54,6 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
           {/* Product Image */}
           <div className="aspect-square overflow-hidden bg-black relative">
-            {/* Percentage Off Badge */}
-            {product.percentageOff > 0 && (
-              <div className="absolute top-4 left-4 z-10">
-                <div className="bg-red-500 text-white px-3 py-2 rounded-full text-sm font-bold">
-                  -{product.percentageOff}% OFF
-                </div>
-              </div>
-            )}
-            
             <ImageWithFallback
               src={imageUrl}
               alt={product.name}

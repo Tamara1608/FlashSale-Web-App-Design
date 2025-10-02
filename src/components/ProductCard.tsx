@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { ImageWithFallback } from './ui/ImageWithFallback';
@@ -6,16 +7,15 @@ import { StockIndicator } from './ui/StockIndicator';
 import { Product } from './types';
 import { Eye } from 'lucide-react';
 
+
 interface ProductCardProps {
   product: Product;
   onProductClick: (product: Product) => void;
 }
 
 export function ProductCard({ product, onProductClick }: ProductCardProps) {
-  // Calculate original price from percentage off
-  const originalPrice = product.percentageOff > 0 
-    ? product.price / (1 - product.percentageOff / 100)
-    : product.originalPrice;
+  // Use original price from ProductService (already calculated from DB)
+  const originalPrice = product.originalPrice;
 
   // Use imageLink from backend
   const imageUrl = product.imageLink;
@@ -24,14 +24,6 @@ export function ProductCard({ product, onProductClick }: ProductCardProps) {
     <Card className="group cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 overflow-hidden">
       <div onClick={() => onProductClick(product)}>
         <div className="aspect-square overflow-hidden bg-gray-50 relative">
-          {/* Percentage Off Badge */}
-          {product.percentageOff > 0 && (
-            <div className="absolute top-2 left-2 z-10">
-              <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
-                -{product.percentageOff}%
-              </div>
-            </div>
-          )}
           
           <ImageWithFallback
             src={imageUrl}

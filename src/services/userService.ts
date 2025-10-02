@@ -2,15 +2,20 @@ import { ApiClient } from '../config/api';
 
 export interface UserResponse {
   id: number;
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   password?: string; 
 }
 
 export interface UpdateUserRequest {
+  firstName?: string;
+  lastName?: string;
   username?: string;
   email?: string;
   password?: string;
+  profilePicture?: string;
 }
 
 export interface UserOrder {
@@ -72,7 +77,7 @@ export class UserService {
 
   static async updateUser(id: number, userData: UpdateUserRequest): Promise<UserResponse> {
     try {
-      const response = await ApiClient.put<UserResponse>(`/users/${id}`, userData);
+      const response = await ApiClient.patch<UserResponse>(`/users/${id}`, userData);
       return response;
     } catch (error) {
       console.error(`Failed to update user ${id}:`, error);

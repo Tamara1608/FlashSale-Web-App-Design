@@ -2,6 +2,8 @@ import { ApiClient, API_ENDPOINTS } from '../config/api';
 
 export interface AuthUser {
   id: number;
+  firstName?: string;
+  lastName?: string;
   username: string;
   email: string;
   token?: string;
@@ -16,6 +18,8 @@ export interface SignupRequest {
   username: string;
   email: string;
   password: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 const LOCAL_STORAGE_KEY = 'flashsale_auth_user';
@@ -45,6 +49,8 @@ export class AuthService {
    
       const user: AuthUser = {
         id: response.id || response.userId || 1,
+        firstName: response.firstName,
+        lastName: response.lastName,
         username: response.username || payload.username,
         email: response.email || '',
         token: response.token
@@ -67,6 +73,8 @@ export class AuthService {
       
       const user: AuthUser = {
         id: response.id || response.userId || 1,
+        firstName: response.firstName || payload.firstName,
+        lastName: response.lastName || payload.lastName,
         username: response.username || payload.username,
         email: response.email || payload.email,
         token: response.token

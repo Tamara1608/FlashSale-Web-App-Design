@@ -5,7 +5,7 @@ export interface ProductResponse {
   id: number;
   name: string;
   description?: string;
-  price: number;
+  price: number; // This is the original price from DB
   stock: number;
   imageLink: string;
   totalStock: number;
@@ -46,22 +46,21 @@ export class ProductService {
   }
 
   private static mapToProduct(response: ProductResponse): Product {
-    // Calculate original price from percentage off if available, otherwise use same price
-    let originalPrice: number;
-    if (response.percentageOff > 0) {
-      originalPrice = response.price / (1 - response.percentageOff / 100);
-    } else {
-      // No discount, original price is the same as current price
-      originalPrice = response.price;
-    }
+    // response.price is the original price from DB
+    const originalPrice = response.price;
+    
+    // Calculate discounted price based on percentageOff
+    const discountedPrice = response.percentageOff > 0 
+      ? response.price * (1 - response.percentageOff / 100)
+      : response.price;
     
     return {
       id: response.id,
       name: response.name,
       description: response.description,
-      price: Number(response.price.toFixed(2)), 
+      price: Number(discountedPrice.toFixed(2)), // Display the discounted price
       stock: response.stock,
-      originalPrice: Number(originalPrice.toFixed(2)),
+      originalPrice: Number(originalPrice.toFixed(2)), // Original price from DB
       imageLink: response.imageLink,
       totalStock: response.totalStock,
       percentageOff: response.percentageOff,
