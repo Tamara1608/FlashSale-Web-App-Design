@@ -90,11 +90,17 @@ export function UserProfile({ onBackClick }: UserProfileProps) {
 
   const handleSave = async () => {
     try {
-      const success = await updateUserData({
+      const updateData: any = {
         username: editForm.username,
         email: editForm.email,
-        password: editForm.password,
-      });
+      };
+      
+      // Only include password if it's not empty
+      if (editForm.password.trim() !== '') {
+        updateData.password = editForm.password;
+      }
+      
+      const success = await updateUserData(updateData);
       
       if (success) {
         setEditForm(prev => ({ ...prev, password: '' }));
